@@ -2,7 +2,7 @@ from .src.node import node_start
 import argparse
 
 parser = argparse.ArgumentParser()
-# parser.add_argument("--ip", type=str, default = "localhost:8214", help="IP address of the server")
+parser.add_argument("--ip", type=str, default = "localhost:8213", help="IP address of the server")
 parser.add_argument("--device", type=str, default = "cpu", help="Device to run the client on")
 parser.add_argument('--wait_time', type = int, default= 5, help= 'time to wait before sending the next request')
 parser.add_argument('--clients', type=int, required=False, default=10, help='Number of clients to run')
@@ -15,7 +15,7 @@ parser.add_argument('--carbon', type = int, default = 0, help= 'if 1 track carbo
 args = parser.parse_args()
 
 configs = {
-    # "ip_address": args.ip,
+    "ip_address": args.ip,
     "wait_time": args.wait_time,
     "device": args.device,
     "num_of_clients": args.clients,
