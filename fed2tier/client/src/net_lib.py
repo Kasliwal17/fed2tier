@@ -19,10 +19,10 @@ def load_data(config):
     trainset, testset = get_data(config)
     # Data distribution for non-custom datasets
     if config['dataset'] != 'CUSTOM':
-        datasets = distributionDataloader(config,  trainset, config['datapoints'], config['client_idx'])
-        trainloader = DataLoader(datasets, batch_size= config['batch_size'], shuffle=True)
+        # datasets = distributionDataloader(config,  trainset, config['datapoints'], config['client_idx'])
+        trainloader = DataLoader(trainset, batch_size= config['batch_size'], shuffle=True)
         testloader = DataLoader(testset, batch_size=config['batch_size'])
-        num_examples = {"trainset": len(datasets), "testset": len(testset)}
+        num_examples = {"trainset": len(trainset), "testset": len(testset)}
     else:
         trainloader = DataLoader(trainset, batch_size= config['batch_size'], shuffle=True)
         testloader = DataLoader(testset, batch_size=config['batch_size'])

@@ -15,6 +15,8 @@ from copy import deepcopy
 import pandas as pd
 from datetime import datetime
 from codecarbon import  OfflineEmissionsTracker
+from concurrent import futures
+import threading
 
 
 # def train(train_order_message, device, args):
@@ -154,10 +156,25 @@ from codecarbon import  OfflineEmissionsTracker
 
 #     return train_response_message, client_dicts
 
-def train(train_order_message, device, args):
+def train(train_order_message, device, args, client_manager):
+
+    accept_conn_after_FL_begin = args['accept_conn_after_FL_begin']
+    communication_rounds = args['rounds']
+    fraction_of_clients=None
+
+    #create a directory to store the results
+    fl_timestamp = f"{datetime.now().strftime('%Y-%m-%d %H-%M-%S')}"
+    save_dir_path = f"FL_checkpoints_node/{fl_timestamp}"
+    os.makedirs(save_dir_path)
+    #create new file inside FL_results to store training results
+    with open(f"{save_dir_path}/FL_results.txt", "w") as file:
+        pass
+    print(f"FL has started, will run for {args['rounds']} rounds...")
+
     data_bytes = train_order_message.modelParameters
     data = torch.load( BytesIO(data_bytes), map_location="cpu" )
     model_parameters, control_variate_server  = data['model_parameters'], data['control_variate']
+    server_model_state_dict = model_parameters
 
     config_dict_bytes = train_order_message.configDict
     config_dict = json.loads( config_dict_bytes.decode("utf-8") )
@@ -170,15 +187,16 @@ def train(train_order_message, device, args):
     else:
         control_variate = None
 
-    
+    exec(f"from .algorithms.{algorithm} import {algorithm}") # nosec
+    aggregator = eval(algorithm)() # nosec
 
-    node_manager.accepting_connections = accept_conn_after_FL_begin
+    client_manager.accepting_connections = accept_conn_after_FL_begin
     for round in range(1, communication_rounds + 1):
-        clients = node_manager.random_select(node_manager.num_connected_clients(), fraction_of_clients) 
+        clients = client_manager.random_select(client_manager.num_connected_clients(), fraction_of_clients) 
         
-        print(f"Communication round {round} is starting with {len(clients)} node(s) out of {node_manager.num_connected_clients()}.")
-        config_dict = {"n_rounds": n_rounds, "algorithm":algorithm, "message":"train",
-                   "dataset":dataset, "net":net, "resize_size":resize_size, "batch_size":batch_size, "threshold":threshold}
+        print(f"Communication round {round} is starting with {len(clients)} node(s) out of {client_manager.num_connected_clients()}.")
+        config_dict = {"algorithm":algorithm, "message":"train",
+                   "dataset":config_dict['dataset'], "net":config_dict['net'], "resize_size":config_dict['resize_size'], "batch_size":config_dict['batch_size'], "epochs":args['epochs'], "carbon-tracker":args['carbon']}
         trained_model_state_dicts = []
         updated_control_variates = []
         with futures.ThreadPoolExecutor(max_workers=5) as executor:
@@ -201,13 +219,38 @@ def train(train_order_message, device, args):
         torch.save(server_model_state_dict, f"{save_dir_path}/round_{round}_aggregated_model.pt")
 
 
+        ###apply algorithms for server level aggregation
+    if config_dict['algorithm'] == "fedavg":
+        state_dict = server_model_state_dict
+    else:
+        state_dict = fedadam(model_parameters, server_model_state_dict)
+
+    # #eval results can be calculated on any one client as all clients share the same model and testset
+    # client_dicts[0]["model"].load_state_dict(state_dict)
+    # eval_loss, eval_accuracy = test_model(client_dicts[0]["model"], client_dicts[0]["testloader"], device)
+    eval_loss = 0
+    eval_accuracy = 0
+    response_dict = {"eval_loss": eval_loss, "eval_accuracy": eval_accuracy}
+    response_dict_bytes = json.dumps(response_dict).encode("utf-8")
+
+    data_to_send = {'model_parameters': state_dict, 'control_variate': control_variate_server}
+    buffer = BytesIO()
+    torch.save(data_to_send, buffer)
+    buffer.seek(0)
+    data_to_send_bytes = buffer.read()
+
+    train_response_message = TrainResponse(
+        modelParameters = data_to_send_bytes, 
+        responseDict = response_dict_bytes)
+
+    return train_response_message
 
 
-def set_parameters(set_parameters_order_message, client_dicts):
+def set_parameters(set_parameters_order_message, client_manager):
     model_parameters_bytes = set_parameters_order_message.modelParameters
     model_parameters = torch.load( BytesIO(model_parameters_bytes), map_location="cpu" )
-    for client_dict in client_dicts:
-        client_dict["model"].load_state_dict(model_parameters)
-    save_model_states(client_dicts, save_dir_path)
+    for client in client_manager.random_select():
+        client.set_parameters(model_parameters)
+        client.disconnect()
 
 

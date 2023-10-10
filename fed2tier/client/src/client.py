@@ -25,7 +25,7 @@ def client_start(config):
             ])
         stub = ClientConnection_pb2_grpc.ClientConnectionStub(channel)
         client_buffer = Queue(maxsize = 10)
-        print("Connected with server")
+        print("Connected with node")
 
         #wait for incoming messages from the server in client_buffer
         #then according to fields present in them call the appropraite function

@@ -55,7 +55,6 @@ def train(train_order_message, device):
     data_bytes = train_order_message.modelParameters
     data = torch.load( BytesIO(data_bytes), map_location="cpu" )
     model_parameters, control_variate,  = data['model_parameters'], data['control_variate']
-    control_variate2 = data['control_variate2']
     config_dict_bytes = train_order_message.configDict
     config_dict = json.loads( config_dict_bytes.decode("utf-8") )
     carbon_tracker = config_dict["carbon-tracker"]
@@ -64,10 +63,7 @@ def train(train_order_message, device):
     model.load_state_dict(model_parameters)
     model = model.to(device)
     epochs = config_dict["epochs"]
-    if config_dict["timeout"]:
-        deadline = time.time() + config_dict["timeout"]
-    else:
-        deadline = None
+    deadline = None
 
     #Run code carbon if the carbon-tracker flag is True
     if carbon_tracker==1:
@@ -80,8 +76,6 @@ def train(train_order_message, device):
         model, control_variate = train_mimelite(model, control_variate, trainloader, epochs, device, deadline)
     elif config_dict['algorithm'] == 'scaffold':
         model, control_variate = train_scaffold(model, control_variate, trainloader, epochs, device, deadline)
-    elif config_dict['algorithm'] == 'mime':
-        model, control_variate = train_mime(model, control_variate, control_variate2, trainloader, epochs, device, deadline)
     elif config_dict['algorithm'] == 'fedavg':
         model = train_fedavg(model, trainloader, epochs, device, deadline)
     elif config_dict['algorithm'] == 'feddyn':

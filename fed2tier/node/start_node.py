@@ -12,6 +12,10 @@ parser.add_argument('--epochs', type = int, default = 5, help= 'number of epochs
 parser.add_argument('--mu', type = int, default = 0.1, help= 'mu hyperparameter for fedprox')
 parser.add_argument('--rounds', type = int, default = 20, help= 'number of communication rounds')
 parser.add_argument('--carbon', type = int, default = 0, help= 'if 1 track carbon emission of the node')
+parser.add_argument("--accept_conn",
+    type = int,
+    default = 1,
+    help = "If set to 1, connections will be accpeted even after FL has begun, else if set to 0, they will be rejected.")
 args = parser.parse_args()
 
 configs = {
@@ -21,6 +25,7 @@ configs = {
     "num_of_clients": args.clients,
     "niid": args.niid,
     "algorithm": args.algorithm,
+    "accept_conn_after_FL_begin": args.accept_conn,
     "epochs": args.epochs,
     "mu": args.mu,
     "rounds": args.rounds,
