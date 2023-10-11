@@ -17,6 +17,7 @@ from datetime import datetime
 from codecarbon import  OfflineEmissionsTracker
 from concurrent import futures
 import threading
+from .server_src.server_evaluate import server_eval
 
 
 # def train(train_order_message, device, args):
@@ -158,6 +159,7 @@ import threading
 
 def train(train_order_message, device, args, client_manager):
 
+
     accept_conn_after_FL_begin = args['accept_conn_after_FL_begin']
     communication_rounds = args['rounds']
     fraction_of_clients=None
@@ -225,12 +227,13 @@ def train(train_order_message, device, args, client_manager):
     else:
         state_dict = fedadam(model_parameters, server_model_state_dict)
 
-    # #eval results can be calculated on any one client as all clients share the same model and testset
-    # client_dicts[0]["model"].load_state_dict(state_dict)
-    # eval_loss, eval_accuracy = test_model(client_dicts[0]["model"], client_dicts[0]["testloader"], device)
-    eval_loss = 0
-    eval_accuracy = 0
-    response_dict = {"eval_loss": eval_loss, "eval_accuracy": eval_accuracy}
+    #test on server test set
+    print("Evaluating on server test set...")
+    eval_result = server_eval(server_model_state_dict,config_dict)
+    eval_result["round"] = round
+    print("Eval results: ", eval_result)
+
+    response_dict = eval_result
     response_dict_bytes = json.dumps(response_dict).encode("utf-8")
 
     data_to_send = {'model_parameters': state_dict, 'control_variate': control_variate_server}

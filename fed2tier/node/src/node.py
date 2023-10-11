@@ -35,6 +35,7 @@ def node_runner(client_manager, configurations):
     
 
     while keep_going:
+        print("\nStarted node runner")
         #wait for specified time before reconnecting
         time.sleep(wait_time)
         
