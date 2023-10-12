@@ -19,7 +19,8 @@ from .node_lib import train, set_parameters
 
 #start the client and connect to server
 def node_runner(client_manager, configurations):
- 
+    
+    print("\nStarted node runner")
     config_dict = {"message": "eval"}
     num_of_clients = configurations["num_of_clients"]
     fraction_of_clients=None
@@ -35,7 +36,6 @@ def node_runner(client_manager, configurations):
     
 
     while keep_going:
-        print("\nStarted node runner")
         #wait for specified time before reconnecting
         time.sleep(wait_time)
         

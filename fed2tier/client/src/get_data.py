@@ -15,11 +15,12 @@ def get_data(config):
     # Get the train and test datasets for each supported dataset
     if config['dataset'] == 'MNIST':
         # Apply transformations to the images
-        apply_transform = transforms.Compose([transforms.Resize(config["resize_size"]), transforms.ToTensor()])
-        # Download and load the trainset
-        trainset = datasets.MNIST(root='client_dataset/MNIST', train=True, download=True, transform=apply_transform)
-        # Download and load the testset
-        testset = datasets.MNIST(root='client_dataset/MNIST', train=False, download=True, transform=apply_transform)
+        apply_transform = transforms.Compose([transforms.Resize(config["resize_size"]), transforms.Grayscale(num_output_channels=1), transforms.ToTensor()])
+        # load local train set
+        client_num = 0  # for client 0
+        trainset = datasets.ImageFolder(root=f'./data/client_{client_num}', transform=apply_transform)
+        testset = datasets.ImageFolder(root=f'./data/client_{client_num}', transform=apply_transform)
+
     elif config['dataset'] == 'FashionMNIST':
         apply_transform = transforms.Compose([transforms.Resize(config['resize_size']), transforms.ToTensor()])
         trainset = datasets.FashionMNIST(root='client_dataset/FashionMNIST',
