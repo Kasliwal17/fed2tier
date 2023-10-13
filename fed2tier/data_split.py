@@ -5,18 +5,19 @@ import torch
 # Define MNIST transform
 transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,))])
 
-# Load the MNIST dataset
-mnist_dataset = datasets.MNIST(root='./data', train=True, transform=transform, download=True)
-
 def split_and_save_data(dataset, num_clients):
-    data_len = len(dataset)
+    if dataset == 'mnist':
+        trainset = datasets.MNIST(root='./data/MNIST', train=True, transform=transform, download=True)
+    elif dataset == 'cifar10':
+        trainset = datasets.CIFAR10(root='./data/CIFAR10', train=True, transform=transform, download=True)
+    data_len = len(trainset)
     for i in range(num_clients):
         # Determine start and end indices
         start_idx = int(i * data_len / num_clients)
         end_idx = int((i + 1) * data_len / num_clients)
         
-        subset = torch.utils.data.Subset(dataset, range(start_idx, end_idx))
-        folder_name = f'./data/client_{i}'
+        subset = torch.utils.data.Subset(trainset, range(start_idx, end_idx))
+        folder_name = f'./data/{dataset}/client_{i}'
         os.makedirs(folder_name, exist_ok=True)
         
         for idx, (image, label) in enumerate(subset):
@@ -27,4 +28,4 @@ def split_and_save_data(dataset, num_clients):
 
 # Split data into 10 parts and save to folders
 num_clients = 5
-split_and_save_data(mnist_dataset, num_clients)
+split_and_save_data(dataset='mnist', mum_clients=num_clients)

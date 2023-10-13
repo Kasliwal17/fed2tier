@@ -17,33 +17,29 @@ def get_data(config):
         # Apply transformations to the images
         apply_transform = transforms.Compose([transforms.Resize(config["resize_size"]), transforms.Grayscale(num_output_channels=1), transforms.ToTensor()])
         # load local train set
-        client_num = 0  # for client 0
         trainset = datasets.ImageFolder(root=config['data_path'], transform=apply_transform)
         testset = datasets.ImageFolder(root=config['data_path'], transform=apply_transform)
 
     elif config['dataset'] == 'FashionMNIST':
-        apply_transform = transforms.Compose([transforms.Resize(config['resize_size']), transforms.ToTensor()])
-        trainset = datasets.FashionMNIST(root='client_dataset/FashionMNIST',
-                                        train=True, download=True, transform=apply_transform)
-        testset = datasets.FashionMNIST(root='client_dataset/FashionMNIST',
-                                        train=False, download=True, transform=apply_transform)
+        apply_transform = transforms.Compose([transforms.Resize(config['resize_size']),transforms.Grayscale(num_output_channels=1), transforms.ToTensor()])
+        # load local train set
+        trainset = datasets.ImageFolder(root=config['data_path'], transform=apply_transform)
+        testset = datasets.ImageFolder(root=config['data_path'], transform=apply_transform)
     elif config['dataset'] == 'CIFAR10':
         apply_transform = transforms.Compose([transforms.Resize(config['resize_size']), transforms.ToTensor()])
-        trainset = datasets.CIFAR10(root='client_dataset/CIFAR10',
-                                    train=True, download=True, transform=apply_transform)
-        testset = datasets.CIFAR10(root='client_dataset/CIFAR10',
-                                   train=False, download=True, transform=apply_transform)
+        # load local train set
+        trainset = datasets.ImageFolder(root=config['data_path'], transform=apply_transform)
+        testset = datasets.ImageFolder(root=config['data_path'], transform=apply_transform)
     elif config['dataset'] == 'CIFAR100':
         apply_transform = transforms.Compose([transforms.Resize(config['resize_size']), transforms.ToTensor()])
-        trainset = datasets.CIFAR100(root='client_dataset/CIFAR100',
-                                     train=True, download=True, transform=apply_transform)
-        testset = datasets.CIFAR100(root='client_dataset/CIFAR100',
-                                    train=False, download=True, transform=apply_transform)
+        # load local train set
+        trainset = datasets.ImageFolder(root=config['data_path'], transform=apply_transform)
+        testset = datasets.ImageFolder(root=config['data_path'], transform=apply_transform)
     elif config['dataset'] == 'CUSTOM':
         apply_transform = transforms.Compose([transforms.Resize(config['resize_size']), transforms.ToTensor()])
-        # Load the custom dataset
-        trainset = customDataset(root='client_custom_dataset/CUSTOM/train', transform=apply_transform)
-        testset = customDataset(root='client_custom_dataset/CUSTOM/test', transform=apply_transform)
+        # load local train set
+        trainset = datasets.ImageFolder(root=config['data_path'], transform=apply_transform)
+        testset = datasets.ImageFolder(root=config['data_path'], transform=apply_transform)
     else:
         # Raise an error if an unsupported dataset is specified
         raise ValueError(f"Unsupported dataset type: {config['dataset']}")
