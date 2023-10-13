@@ -26,6 +26,7 @@ parser.add_argument('--net', type = str, default = 'LeNet', help= 'client networ
 parser.add_argument('--batch_size', type = int, default = 8, help= 'batch size')
 parser.add_argument('--resize_size', type = int, default = 32, help= 'resize dimension')
 parser.add_argument('--threshold', type = float, default = 0.8, help= 'node side accuracy threshold for early stopping')
+parser.add_argument('--own_ip', type = str, default = 'localhost:8213', help= 'own ip address')
 args = parser.parse_args()
 
 configurations = {
@@ -41,6 +42,7 @@ configurations = {
     "batch_size": args.batch_size,
     "resize_size": args.resize_size,
     "threshold": args.threshold,
+    "own_ip": args.own_ip,
 }
 
 #start the server with the given parameters

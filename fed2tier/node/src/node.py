@@ -32,6 +32,7 @@ def node_runner(client_manager, configurations):
     wait_time = configurations["wait_time"]
     device = torch.device(configurations["device"])
     client_manager.accepting_connections = accept_conn_after_FL_begin
+    server_round_counter = 0
 
     
 
@@ -52,6 +53,8 @@ def node_runner(client_manager, configurations):
             for server_message in stub.Connect( iter(client_buffer.get, None) ):
                 
                 if server_message.HasField("trainOrder"):
+                    print("Start server round: ", server_round_counter)
+                    server_round_counter += 1
                     train_order_message = server_message.trainOrder
                     train_response_message= train(train_order_message, device, configurations, client_manager)
                     message_to_server = ClientMessage(trainResponse = train_response_message)
@@ -86,7 +89,7 @@ def node_start(configurations):
     channel_opt = [('grpc.max_send_message_length', -1), ('grpc.max_receive_message_length', -1)]
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10), options=channel_opt)
     ClientConnection_pb2_grpc.add_ClientConnectionServicer_to_server( client_connection_servicer, server )
-    server.add_insecure_port('localhost:8214')
+    server.add_insecure_port(configurations["own_ip"])
     server.start()
 
     server_runner_thread = threading.Thread(target = node_runner, args = (client_manager, configurations, ))

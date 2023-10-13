@@ -51,7 +51,7 @@ def evaluate(eval_order_message, device):
     return eval_response_message
 
 
-def train(train_order_message, device):
+def train(train_order_message, device, config):
     data_bytes = train_order_message.modelParameters
     data = torch.load( BytesIO(data_bytes), map_location="cpu" )
     model_parameters, control_variate,  = data['model_parameters'], data['control_variate']
@@ -63,6 +63,7 @@ def train(train_order_message, device):
     model.load_state_dict(model_parameters)
     model = model.to(device)
     epochs = config_dict["epochs"]
+    config_dict['data_path'] = config['data_path']
     deadline = None
 
     #Run code carbon if the carbon-tracker flag is True

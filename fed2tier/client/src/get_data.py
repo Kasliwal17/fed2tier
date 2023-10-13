@@ -18,8 +18,8 @@ def get_data(config):
         apply_transform = transforms.Compose([transforms.Resize(config["resize_size"]), transforms.Grayscale(num_output_channels=1), transforms.ToTensor()])
         # load local train set
         client_num = 0  # for client 0
-        trainset = datasets.ImageFolder(root=f'./data/client_{client_num}', transform=apply_transform)
-        testset = datasets.ImageFolder(root=f'./data/client_{client_num}', transform=apply_transform)
+        trainset = datasets.ImageFolder(root=config['data_path'], transform=apply_transform)
+        testset = datasets.ImageFolder(root=config['data_path'], transform=apply_transform)
 
     elif config['dataset'] == 'FashionMNIST':
         apply_transform = transforms.Compose([transforms.Resize(config['resize_size']), transforms.ToTensor()])

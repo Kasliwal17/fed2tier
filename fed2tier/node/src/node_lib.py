@@ -254,6 +254,5 @@ def set_parameters(set_parameters_order_message, client_manager):
     model_parameters = torch.load( BytesIO(model_parameters_bytes), map_location="cpu" )
     for client in client_manager.random_select():
         client.set_parameters(model_parameters)
-        client.disconnect()
 
 

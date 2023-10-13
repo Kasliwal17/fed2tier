@@ -38,7 +38,7 @@ def client_start(config):
 
             if server_message.HasField("trainOrder"):
                 train_order_message = server_message.trainOrder
-                train_response_message = train(train_order_message, device)
+                train_response_message = train(train_order_message, device, config)
                 message_to_server = ClientMessage(trainResponse = train_response_message)
                 client_buffer.put(message_to_server)
 

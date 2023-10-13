@@ -3,6 +3,7 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--ip", type=str, default = "localhost:8213", help="IP address of the server")
+parser.add_argument("--own_ip", type=str, default = "localhost:8214", help="own ip address")
 parser.add_argument("--device", type=str, default = "cpu", help="Device to run the client on")
 parser.add_argument('--wait_time', type = int, default= 5, help= 'time to wait before sending the next request')
 parser.add_argument('--clients', type=int, required=False, default=10, help='Number of clients to run')
@@ -29,7 +30,8 @@ configs = {
     "epochs": args.epochs,
     "mu": args.mu,
     "rounds": args.rounds,
-    "carbon": args.carbon
+    "carbon": args.carbon,
+    "own_ip": args.own_ip,
 }
 
 if __name__ == '__main__':

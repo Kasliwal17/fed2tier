@@ -105,7 +105,7 @@ def server_start(configurations):
     channel_opt = [('grpc.max_send_message_length', -1), ('grpc.max_receive_message_length', -1)]
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10), options=channel_opt)
     ClientConnection_pb2_grpc.add_ClientConnectionServicer_to_server( node_connection_servicer, server )
-    server.add_insecure_port('localhost:8213')
+    server.add_insecure_port(configurations["own_ip"])
     server.start()
 
     server_runner_thread = threading.Thread(target = server_runner, args = (node_manager, configurations, ))
