@@ -90,6 +90,8 @@ def train(train_order_message, device, config):
     if carbon_tracker==1:
         emissions: float = tracker.stop()
         print(f"Emissions: {emissions} kg")
+    else:
+        emissions = 0
 
     myJSON = json.dumps(config_dict)
     json_path = save_dir_path + "/config.json"
@@ -118,6 +120,7 @@ def train(train_order_message, device, config):
     train_loss, train_accuracy = test_model(model, testloader, device)
     response_dict = {"train_loss": train_loss, "train_accuracy": train_accuracy}
     if wandb_:
+        response_dict["emissions"] = emissions
         wandb.log(response_dict)
     response_dict_bytes = json.dumps(response_dict).encode("utf-8")
 
