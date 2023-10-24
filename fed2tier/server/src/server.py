@@ -86,7 +86,8 @@ def server_runner(node_manager, configurations):
         eval_result = server_eval(server_model_state_dict,configurations)
         eval_result["round"] = round
         print("Eval results: ", eval_result)
-        wandb.log(eval_result)
+        if configurations["wandb"]:
+            wandb.log(eval_result)
         #store the results
         with open(f"{save_dir_path}/FL_results.txt", "a") as file:
             file.write( str(eval_result) + "\n" )

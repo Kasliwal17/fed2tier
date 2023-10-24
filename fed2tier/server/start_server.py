@@ -28,6 +28,7 @@ parser.add_argument('--batch_size', type = int, default = 8, help= 'batch size')
 parser.add_argument('--resize_size', type = int, default = 32, help= 'resize dimension')
 parser.add_argument('--threshold', type = float, default = 0.8, help= 'node side accuracy threshold for early stopping')
 parser.add_argument('--own_ip', type = str, default = 'localhost:8213', help= 'own ip address')
+parser.add_argument('--wandb', type = int, default = 1, help= 'set 1 for wandb logging, else 0')
 args = parser.parse_args()
 
 configurations = {
@@ -44,9 +45,11 @@ configurations = {
     "resize_size": args.resize_size,
     "threshold": args.threshold,
     "own_ip": args.own_ip,
+    "wandb": args.wandb
 }
-configurations["type"]="server"
-wandb.init(project="fed2tier", config=configurations, entity="gan-noniid")
+if wandb:
+    configurations["type"]="server"
+    wandb.init(project="fed2tier", config=configurations, entity="gan-noniid")
 #start the server with the given parameters
 if __name__ == '__main__':
     
