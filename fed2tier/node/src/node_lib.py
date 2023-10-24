@@ -227,11 +227,12 @@ def train(train_order_message, device, args, client_manager):
     else:
         state_dict = fedadam(model_parameters, server_model_state_dict)
 
-    #test on server test set
-    print("Evaluating on server test set...")
-    eval_result = server_eval(server_model_state_dict,config_dict)
-    eval_result["round"] = round
-    print("Eval results: ", eval_result)
+    if args['eval']==1:
+        #test on server test set
+        print("Evaluating on server test set...")
+        eval_result = server_eval(server_model_state_dict,config_dict)
+        eval_result["round"] = round
+        print("Eval results: ", eval_result)
 
     response_dict = eval_result
     response_dict_bytes = json.dumps(response_dict).encode("utf-8")
