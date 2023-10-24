@@ -191,7 +191,6 @@ def train(train_order_message, device, args, client_manager):
 
     exec(f"from .algorithms.{algorithm} import {algorithm}") # nosec
     aggregator = eval(algorithm)() # nosec
-
     client_manager.accepting_connections = accept_conn_after_FL_begin
     for round in range(1, communication_rounds + 1):
         clients = client_manager.random_select(client_manager.num_connected_clients(), fraction_of_clients) 
@@ -226,6 +225,8 @@ def train(train_order_message, device, args, client_manager):
             eval_result = server_eval(server_model_state_dict,config_dict)
             eval_result["round"] = round
             print("Eval results: ", eval_result)
+        else:
+            eval_result = {"eval_loss": 0, "eval_accuracy": 0, "round": 0}
 
 
         ###apply algorithms for server level aggregation
