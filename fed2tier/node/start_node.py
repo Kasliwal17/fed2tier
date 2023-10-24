@@ -13,6 +13,7 @@ parser.add_argument('--epochs', type = int, default = 5, help= 'number of epochs
 parser.add_argument('--mu', type = int, default = 0.1, help= 'mu hyperparameter for fedprox')
 parser.add_argument('--rounds', type = int, default = 20, help= 'number of communication rounds')
 parser.add_argument('--carbon', type = int, default = 0, help= 'if 1 track carbon emission of the node')
+parser.add_argument('--eval', type = int, default = 0, help= 'if 1 evaluate the model after each round')
 parser.add_argument("--accept_conn",
     type = int,
     default = 1,
@@ -32,6 +33,7 @@ configs = {
     "rounds": args.rounds,
     "carbon": args.carbon,
     "own_ip": args.own_ip,
+    "eval": args.eval,
 }
 
 if __name__ == '__main__':
