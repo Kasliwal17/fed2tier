@@ -1,7 +1,7 @@
 from .node_manager import NodeManager
 from .client_connection_servicer import ClientConnectionServicer
 from .server_evaluate import server_eval
-
+import wandb
 import grpc
 from . import ClientConnection_pb2_grpc
 from concurrent import futures
@@ -86,6 +86,7 @@ def server_runner(node_manager, configurations):
         eval_result = server_eval(server_model_state_dict,configurations)
         eval_result["round"] = round
         print("Eval results: ", eval_result)
+        wandb.log(eval_result)
         #store the results
         with open(f"{save_dir_path}/FL_results.txt", "a") as file:
             file.write( str(eval_result) + "\n" )

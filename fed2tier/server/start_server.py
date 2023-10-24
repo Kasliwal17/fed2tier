@@ -2,6 +2,7 @@
 import argparse
 from .src.server import server_start
 from .src.server_lib import save_intial_model
+import wandb
 
 #the parameters that can be passed while starting the server 
 parser = argparse.ArgumentParser()
@@ -44,7 +45,8 @@ configurations = {
     "threshold": args.threshold,
     "own_ip": args.own_ip,
 }
-
+configurations["type"]="server"
+wandb.init(project="fed2tier", config=configurations, entity="gan-noniid")
 #start the server with the given parameters
 if __name__ == '__main__':
     
