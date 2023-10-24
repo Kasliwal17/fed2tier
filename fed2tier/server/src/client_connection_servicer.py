@@ -23,7 +23,7 @@ class ClientConnectionServicer( ClientConnection_pb2_grpc.ClientConnectionServic
         register_result = self.client_manager.register(node)
         #if server is accepting connections, and registering was successful, True is returned
         if register_result:
-            print(f"Client {client_id} connected.")
+            print(f"Node {client_id} connected.")
             client_index = self.client_manager.num_connected_clients() - 1
 
             try:
@@ -35,10 +35,10 @@ class ClientConnectionServicer( ClientConnection_pb2_grpc.ClientConnectionServic
             finally:
                 node.is_connected = False
                 self.client_manager.deregister(client_index)
-                print(f"Client {client_id} has disconnected. Now {self.client_manager.num_connected_clients()} clients remain active.")
+                print(f"Node {client_id} has disconnected. Now {self.client_manager.num_connected_clients()} clients remain active.")
         #server is not accepting connections or registering failed        
         else:
             node.disconnect()
             server_message = send_buffer.get()
             yield server_message
-            print(f"Client {client_id} attempted to connect. Connection refused.")
+            print(f"Node {client_id} attempted to connect. Connection refused.")
