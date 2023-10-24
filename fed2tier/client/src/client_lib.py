@@ -13,6 +13,7 @@ from .get_data import get_data
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+import wandb
 
 from .ClientConnection_pb2 import  EvalResponse, TrainResponse
 
@@ -64,6 +65,7 @@ def train(train_order_message, device, config):
     model = model.to(device)
     epochs = config_dict["epochs"]
     config_dict['data_path'] = config['data_path']
+    wandb_ = config_dict['wandb']
     deadline = None
 
     #Run code carbon if the carbon-tracker flag is True
@@ -115,6 +117,8 @@ def train(train_order_message, device, config):
 
     train_loss, train_accuracy = test_model(model, testloader, device)
     response_dict = {"train_loss": train_loss, "train_accuracy": train_accuracy}
+    if wandb_:
+        wandb.log(response_dict)
     response_dict_bytes = json.dumps(response_dict).encode("utf-8")
 
     train_response_message = TrainResponse(
