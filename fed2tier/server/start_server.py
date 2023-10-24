@@ -47,9 +47,10 @@ configurations = {
     "own_ip": args.own_ip,
     "wandb": args.wandb
 }
+
 if configurations["wandb"]:
     configurations["type"]="server"
-    wandb.init(project="fed2tier", config=configurations, entity="gan-noniid")
+    wandb.init(project="fed2tier", config=configurations, entity="fed2tier")
 #start the server with the given parameters
 if __name__ == '__main__':
     

@@ -65,7 +65,7 @@ def train(train_order_message, device, config):
     model = model.to(device)
     epochs = config_dict["epochs"]
     config_dict['data_path'] = config['data_path']
-    wandb_ = config_dict['wandb']
+    wandb_ = config['wandb']
     deadline = None
 
     #Run code carbon if the carbon-tracker flag is True
@@ -120,7 +120,7 @@ def train(train_order_message, device, config):
     train_loss, train_accuracy = test_model(model, testloader, device)
     response_dict = {"train_loss": train_loss, "train_accuracy": train_accuracy}
     if wandb_:
-        response_dict["emissions"] = emissions
+        response_dict["emissions"] = emissions*100000
         wandb.log(response_dict)
     response_dict_bytes = json.dumps(response_dict).encode("utf-8")
 

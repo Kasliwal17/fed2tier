@@ -197,7 +197,7 @@ def train(train_order_message, device, args, client_manager):
         
         print(f"Communication round {round} is starting with {len(clients)} node(s) out of {client_manager.num_connected_clients()}.")
         config_dict = {"algorithm":algorithm, "message":"train",
-                   "dataset":config_dict['dataset'], "net":config_dict['net'], "resize_size":config_dict['resize_size'], "batch_size":config_dict['batch_size'], "epochs":args['epochs'], "carbon-tracker":args['carbon'], "wandb":args['wandb']}
+                   "dataset":config_dict['dataset'], "net":config_dict['net'], "resize_size":config_dict['resize_size'], "batch_size":config_dict['batch_size'], "epochs":args['epochs'], "carbon-tracker":args['carbon']}
         trained_model_state_dicts = []
         updated_control_variates = []
         with futures.ThreadPoolExecutor(max_workers=5) as executor:

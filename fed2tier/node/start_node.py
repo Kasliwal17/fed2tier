@@ -14,7 +14,6 @@ parser.add_argument('--mu', type = int, default = 0.1, help= 'mu hyperparameter 
 parser.add_argument('--rounds', type = int, default = 20, help= 'number of communication rounds')
 parser.add_argument('--carbon', type = int, default = 0, help= 'if 1 track carbon emission of the node')
 parser.add_argument('--eval', type = int, default = 0, help= 'if 1 evaluate the model after each round')
-parser.add_argument('--wandb', type = int, default = 1, help= 'set 1 for wandb logging, else 0')
 parser.add_argument("--accept_conn",
     type = int,
     default = 1,
@@ -35,7 +34,6 @@ configs = {
     "carbon": args.carbon,
     "own_ip": args.own_ip,
     "eval": args.eval,
-    "wandb": args.wandb
 }
 
 if __name__ == '__main__':

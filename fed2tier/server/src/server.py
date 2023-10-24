@@ -68,7 +68,7 @@ def server_runner(node_manager, configurations):
                 trained_model_state_dict, updated_control_variate, results = result_future.result()
                 trained_model_state_dicts.append(trained_model_state_dict)
                 updated_control_variates.append(updated_control_variate)
-                print(f"Training results (client {clients[client_index].client_id}): ", results)
+                print(f"Training results (node {clients[client_index].client_id}): ", results)
         print("Recieved all trained model parameters.")
         
         selected_state_dicts = trained_model_state_dicts

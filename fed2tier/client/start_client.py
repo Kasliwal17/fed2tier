@@ -20,7 +20,7 @@ configs = {
 }
 if configs["wandb"]:
     configs["type"]="client"
-    wandb.init(project="fed2tier", config=configs, entity="gan-noniid")
+    wandb.init(project="fed2tier", config=configs, entity="fed2tier")
 
 if __name__ == '__main__':
     client_start(configs)
