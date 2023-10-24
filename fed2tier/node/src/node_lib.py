@@ -220,6 +220,13 @@ def train(train_order_message, device, args, client_manager):
 
         torch.save(server_model_state_dict, f"{save_dir_path}/round_{round}_aggregated_model.pt")
 
+        if args['eval']==1:
+            #test on server test set
+            print("Evaluating on server test set...")
+            eval_result = server_eval(server_model_state_dict,config_dict)
+            eval_result["round"] = round
+            print("Eval results: ", eval_result)
+
 
         ###apply algorithms for server level aggregation
     if config_dict['algorithm'] == "fedavg":
@@ -227,12 +234,6 @@ def train(train_order_message, device, args, client_manager):
     else:
         state_dict = fedadam(model_parameters, server_model_state_dict)
 
-    if args['eval']==1:
-        #test on server test set
-        print("Evaluating on server test set...")
-        eval_result = server_eval(server_model_state_dict,config_dict)
-        eval_result["round"] = round
-        print("Eval results: ", eval_result)
 
     response_dict = eval_result
     response_dict_bytes = json.dumps(response_dict).encode("utf-8")
