@@ -28,4 +28,4 @@ def split_and_save_data(dataset, num_clients):
 
 # Split data into 10 parts and save to folders
 num_clients = 5
-split_and_save_data(dataset='mnist', mum_clients=num_clients)
+split_and_save_data(dataset='mnist', num_clients=num_clients)
